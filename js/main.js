@@ -38,4 +38,57 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+
+    // TIMER
+    let deadline = '2022-06-30';
+    
+    function getDateValue(endtime) {
+        let t = Date.parse(endtime) - Date.parse(new Date()),
+            days = Math.floor(t / (1000 * 60 * 60 * 24)),
+            hours = Math.floor(t / (1000 * 60 * 60) % 24),
+            minutes = Math.floor(t / (1000 * 60) % 60),
+            seconds = Math.floor(t / 1000 % 60);
+
+        return {
+            'total': t,
+            'days': days,
+            'hours': hours,
+            'minutes': minutes,
+            'seconds': seconds,
+        };
+    }
+
+    function setTimeValue(id, endtime) {
+        let timer = document.querySelector(id),
+            days = timer.querySelector('#days'),
+            hours = timer.querySelector('#hours'),
+            minutes = timer.querySelector('#minutes'),
+            seconds = timer.querySelector('#seconds'),
+            timerInterval = setInterval(updateDate, 1000);
+        
+        updateDate();
+        function updateDate() {
+            let t = getDateValue(endtime);
+
+            function getNum(num) {
+                if (num < 10) {
+                    return `0${num}`;
+                } else {
+                return num;
+            }
+            }
+
+            days.textContent = getNum(t.days);
+            hours.textContent = getNum(t.hours);
+            minutes.textContent = getNum(t.minutes);
+            seconds.textContent = getNum(t.seconds);
+
+            if (t.total == 0) {
+                clearInterval(timerInterval);
+            }
+        }
+    }
+
+    setTimeValue('.timer', deadline);
+
 });
