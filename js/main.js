@@ -142,7 +142,7 @@ window.addEventListener('DOMContentLoaded', () => {
         // FORMS
 
         let message = {
-            loading: 'Загрузка...',
+            loading: 'img/spinner/spinner.svg',
             success: 'Спасибо, скоро мы с Вами свяжемся',
             failure: 'Что-то пошло не так',
         };
@@ -156,10 +156,14 @@ window.addEventListener('DOMContentLoaded', () => {
         function postData(form) {
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
-                let statusMessage = document.createElement('div');
-                statusMessage.classList.add('status');
-                statusMessage.textContent = message.loading;
-                form.append(statusMessage);
+                let statusMessage = document.createElement('img');
+                statusMessage.src = message.loading;
+                statusMessage.alt = 'loading';
+                statusMessage.style.cssText = `
+                    display: block;
+                    margin: 0 auto;
+                `;
+                form.insertAdjacentElement('afterend', statusMessage);
 
                 const request = new XMLHttpRequest();
                 request.open('POST', 'server.php', true);
