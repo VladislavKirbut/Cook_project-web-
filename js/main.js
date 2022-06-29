@@ -165,10 +165,6 @@ window.addEventListener('DOMContentLoaded', () => {
                 `;
                 form.insertAdjacentElement('afterend', statusMessage);
 
-                const request = new XMLHttpRequest();
-                request.open('POST', 'server.php', true);
-
-                request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
                 let formData = new FormData(form);
 
                 let obj = {};
@@ -176,23 +172,25 @@ window.addEventListener('DOMContentLoaded', () => {
                 formData.forEach((data, i) => {
                     obj[i] = data;
                 });
-                const json = JSON.stringify(obj);
-                request.send(json);
 
-                request.addEventListener('load', () => {
-                    if (request.status == 200) {
-                        console.log(request.response);
-                        showThanksModal(message.success);
-                        form.reset();
-                        setTimeout(() => {
-                            statusMessage.remove();
-                        }, 3000);
-                    } else {
-                        console.log(new Error('Что-то пошло не так!'));
-                        showThanksModal(message.failure);
-                        form.reset();
-                    }
-                });
+                fetch('server.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-type': 'application/json; charset=utf-8'
+                    },
+                    body: JSON.stringify(obj),
+                })
+                .then(response => response.text())
+                .then(data => {
+                    console.log(data);
+                    showThanksModal(message.success);
+                    statusMessage.remove();
+                })
+                .catch(() => {
+                    console.log(new Error('Что-то пошло не так'));
+                    showThanksModal(message.failure);
+                })
+                .finally(() => form.reset());
             }); 
         }
 
